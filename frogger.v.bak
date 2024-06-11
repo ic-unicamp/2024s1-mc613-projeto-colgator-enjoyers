@@ -11,7 +11,13 @@ module frogger (
   output VGA_SYNC_N,
   output reg [7:0] VGA_R,
   output reg [7:0] VGA_G,
-  output reg [7:0] VGA_B
+  output reg [7:0] VGA_B,
+  output reg [6:0] digito0,// digito da direita
+  output reg [6:0] digito1,
+  output reg [6:0] digito2,
+  output reg [6:0] digito3,
+  output reg [6:0] digito4,
+  output reg [6:0] digito5// digito da esquerda
 );
     
 clock_divider divider_25(
@@ -46,11 +52,11 @@ always @(posedge VGA_CLK) begin
     end
   end
   
-  if (x > 96 && y > 2 && x > x_frog && x < (x_frog + 32) && y > y_frog && y < (y_frog + 32)) begin
+  if (x > 96 && y > 2 && x > x_frog && x < (x_frog + 16) && y > y_frog && y < (y_frog + 16)) begin
     VGA_R = 0;
     VGA_G = 255;
     VGA_B = 0;
-  end if (x > 96 && y > 2 && ((y > 480 - 32 && y < 480) || (y > 402 - 32 && y < 402))) begin
+  end if (x > 96 && y > 2 && ((y > 480 - 16 && y < 480) || (y > 418 - 16 && y < 418))) begin
     VGA_R = 255;
     VGA_G = 255;
     VGA_B = 255;
@@ -59,6 +65,13 @@ always @(posedge VGA_CLK) begin
     VGA_G = 0;
     VGA_B = 0;
   end
+  
+//   digito0 = (pontuacao_atual == 0) ? 7'b1111111 : saida_decoder0;
+//   digito1 = (pontuacao_atual < 10) ? 7'b1111111 : saida_decoder1;
+//   digito2 = (pontuacao_atual < 100) ? 7'b1111111 : saida_decoder2;
+//   digito3 = (pontuacao_geral == 0) ? 7'b1111111 : saida_decoder3;
+//   digito4 = (pontuacao_geral < 10) ? 7'b1111111 : saida_decoder4;
+//   digito5 = (pontuacao_geral < 100) ? 7'b1111111 : saida_decoder5;
 end
 
 
@@ -77,25 +90,25 @@ always @(posedge VGA_CLK) begin
       end
     end
     1: begin
-      x_frog = x_frog + 32;
+      x_frog = x_frog + 16;
       if (x_frog > 640 + 141) begin
         x_frog = 141;
       end
       estado = 5;
     end
     2: begin
-      x_frog = x_frog - 32;
+      x_frog = x_frog - 16;
       if (x_frog < 141) begin
         x_frog = 640 + 141 - 15;
       end
       estado = 5;
     end
     3: begin
-      y_frog = y_frog + 32;
+      y_frog = y_frog + 16;
       estado = 5;
     end
     4: begin
-      y_frog = y_frog - 32;
+      y_frog = y_frog - 16;
       estado = 5;
     end
     5: begin
