@@ -11,7 +11,24 @@ module frogger (
   output VGA_SYNC_N,
   output reg [7:0] VGA_R,
   output reg [7:0] VGA_G,
-  output reg [7:0] VGA_B
+  output reg [7:0] VGA_B,
+  output reg [6:0] digito0,
+  output reg [6:0] digito1,
+  output reg [6:0] digito2
+);
+
+bcd converter(
+  .entrada(pontuacao),
+  .bcd(saida_debugger)
+);
+
+bcd_to_7seg_decoder decoder(
+	.bcd0(saida_debugger[3:0]),
+	.bcd1(saida_debugger[7:4]),
+	.bcd2(saida_debugger[11:8]),
+	.seg_out0(saida_decoder0),
+	.seg_out1(saida_decoder1),
+	.seg_out2(saida_decoder2),
 );
     
 clock_divider divider_25(
@@ -19,9 +36,68 @@ clock_divider divider_25(
   .CLK_25(VGA_CLK)
 );
 
-wire refreshrate;
-integer pontuacao = 0;
-reg [21:0] refreshrate_divider = 2000000;
+ball_refreshrate car01_refresh(
+	.clk_50MHz(CLOCK_50),
+	.N(refreshrate_divider01),
+	.clk_out(refreshrate01)
+);
+
+ball_refreshrate car02_refresh(
+	.clk_50MHz(CLOCK_50),
+	.N(refreshrate_divider02),
+	.clk_out(refreshrate02)
+);
+
+ball_refreshrate car03_refresh(
+	.clk_50MHz(CLOCK_50),
+	.N(refreshrate_divider03),
+	.clk_out(refreshrate03)
+);
+
+ball_refreshrate car04_refresh(
+	.clk_50MHz(CLOCK_50),
+	.N(refreshrate_divider04),
+	.clk_out(refreshrate04)
+);
+
+ball_refreshrate car05_refresh(
+	.clk_50MHz(CLOCK_50),
+	.N(refreshrate_divider05),
+	.clk_out(refreshrate05)
+);
+
+ball_refreshrate car06_refresh(
+	.clk_50MHz(CLOCK_50),
+	.N(refreshrate_divider06),
+	.clk_out(refreshrate06)
+);
+
+ball_refreshrate car07_refresh(
+	.clk_50MHz(CLOCK_50),
+	.N(refreshrate_divider07),
+	.clk_out(refreshrate07)
+);
+
+ball_refreshrate car08_refresh(
+	.clk_50MHz(CLOCK_50),
+	.N(refreshrate_divider08),
+	.clk_out(refreshrate08)
+);
+wire refreshrate01, refreshrate02, refreshrate03, refreshrate04, refreshrate05, refreshrate06, refreshrate07, refreshrate08;
+integer win = 0;
+reg [23:0] pontuacao = 0;
+wire [23:0] saida_debugger;
+wire [6:0] saida_decoder0;
+wire [6:0] saida_decoder1;
+wire [6:0] saida_decoder2;
+reg [21:0] refreshrate_divider01 = 1500000;
+reg [21:0] refreshrate_divider02 = 2500000;
+reg [21:0] refreshrate_divider03 = 3000000;
+reg [21:0] refreshrate_divider04 = 3500000;
+reg [21:0] refreshrate_divider05 = 5000000;
+reg [21:0] refreshrate_divider06 = 3000000;
+reg [21:0] refreshrate_divider07 = 4500000;
+reg [21:0] refreshrate_divider08 = 5000000;
 integer x, y, estado = 0;
 integer frametime = 0.042;
 integer x_frog = ((640)/ 2) + 143;
@@ -58,68 +134,68 @@ initial begin
 	 line01[6] = 8'd2;
 	 line01[7] = 8'd3;
 	 
-	 line02[0] = 8'd1;
-	 line02[1] = 8'd3;
-	 line02[2] = 8'd2;
+	 line02[0] = 8'd2;
+	 line02[1] = 8'd0;
+	 line02[2] = 8'd1;
 	 line02[3] = 8'd0;
-	 line02[4] = 8'd0;
-	 line02[5] = 8'd3;
-	 line02[6] = 8'd2;
+	 line02[4] = 8'd3;
+	 line02[5] = 8'd1;
+	 line02[6] = 8'd0;
 	 line02[7] = 8'd3;
 	 
-	 line03[0] = 8'd1;
-	 line03[1] = 8'd3;
-	 line03[2] = 8'd2;
+	 line03[0] = 8'd2;
+	 line03[1] = 8'd2;
+	 line03[2] = 8'd0;
 	 line03[3] = 8'd0;
 	 line03[4] = 8'd0;
-	 line03[5] = 8'd3;
+	 line03[5] = 8'd2;
 	 line03[6] = 8'd2;
-	 line03[7] = 8'd3;
+	 line03[7] = 8'd0;
 	 
 	 line04[0] = 8'd1;
-	 line04[1] = 8'd3;
-	 line04[2] = 8'd2;
+	 line04[1] = 8'd0;
+	 line04[2] = 8'd1;
 	 line04[3] = 8'd0;
-	 line04[4] = 8'd0;
-	 line04[5] = 8'd3;
-	 line04[6] = 8'd2;
-	 line04[7] = 8'd3;
+	 line04[4] = 8'd1;
+	 line04[5] = 8'd0;
+	 line04[6] = 8'd1;
+	 line04[7] = 8'd0;
 	 
-	 line05[0] = 8'd1;
-	 line05[1] = 8'd3;
+	 line05[0] = 8'd0;
+	 line05[1] = 8'd1;
 	 line05[2] = 8'd2;
 	 line05[3] = 8'd0;
-	 line05[4] = 8'd0;
-	 line05[5] = 8'd3;
-	 line05[6] = 8'd2;
-	 line05[7] = 8'd3;
+	 line05[4] = 8'd1;
+	 line05[5] = 8'd2;
+	 line05[6] = 8'd0;
+	 line05[7] = 8'd0;
 	 
-	 line06[0] = 8'd1;
+	 line06[0] = 8'd0;
 	 line06[1] = 8'd3;
-	 line06[2] = 8'd2;
-	 line06[3] = 8'd0;
+	 line06[2] = 8'd0;
+	 line06[3] = 8'd3;
 	 line06[4] = 8'd0;
 	 line06[5] = 8'd3;
-	 line06[6] = 8'd2;
+	 line06[6] = 8'd0;
 	 line06[7] = 8'd3;
 	 
 	 line07[0] = 8'd1;
-	 line07[1] = 8'd3;
-	 line07[2] = 8'd2;
-	 line07[3] = 8'd0;
+	 line07[1] = 8'd2;
+	 line07[2] = 8'd0;
+	 line07[3] = 8'd1;
 	 line07[4] = 8'd0;
 	 line07[5] = 8'd3;
 	 line07[6] = 8'd2;
-	 line07[7] = 8'd3;
+	 line07[7] = 8'd0;
 	 
-	 line08[0] = 8'd1;
-	 line08[1] = 8'd3;
-	 line08[2] = 8'd2;
-	 line08[3] = 8'd0;
+	 line08[0] = 8'd0;
+	 line08[1] = 8'd1;
+	 line08[2] = 8'd0;
+	 line08[3] = 8'd2;
 	 line08[4] = 8'd0;
 	 line08[5] = 8'd3;
-	 line08[6] = 8'd2;
-	 line08[7] = 8'd3;
+	 line08[6] = 8'd0;
+	 line08[7] = 8'd1;
 	
 end
 
@@ -132,17 +208,11 @@ integer idx06 = 0;
 integer idx07 = 0;
 integer idx08 = 0;
 
-
-ball_refreshrate ball_refresh(
-	.clk_50MHz(CLOCK_50),
-	.N(refreshrate_divider),
-	.clk_out(refreshrate)
-);
-
 always @(posedge VGA_CLK) begin
 
 	x = x + 1;
 	reset = 0;
+  win = 0;
 	if (x == 800) begin
 		x = 0;
 		y = y + 1;
@@ -159,6 +229,10 @@ always @(posedge VGA_CLK) begin
 		VGA_R = 255;
 		VGA_G = 255;
 		VGA_B = 255;
+  end else if (x > 96 && y > 2 && y < (96 + 34))begin
+    VGA_R = 0;
+		VGA_G = 0;
+    VGA_B = 255;
 	end else begin
 		VGA_R = 0;
 		VGA_G = 0;
@@ -193,9 +267,9 @@ always @(posedge VGA_CLK) begin
 		end
 		for (i = 0; i < 8; i = i + 1) begin
 			if(x > 96 && y > 2 && (y > (288 + 34) - 32 && y < (288 + 34)) && (x > adress05[i] && x < (adress05[i] + (32 * line05[i])))) begin
-				VGA_R = 0;
-				VGA_G = 5;
-				VGA_B = 24;
+				VGA_R = 27;
+				VGA_G = 100;
+				VGA_B = 196;
 			end
 		end
 		for (i = 0; i < 8; i = i + 1) begin
@@ -271,6 +345,14 @@ always @(posedge VGA_CLK) begin
 		end
 	end
 	
+  if (y_frog + 16 < (96 + 34)) begin
+    reset = 1;
+    win = 1;
+  end
+
+  digito0 = (pontuacao == 0) ? 7'b1111111 : saida_decoder0;
+  digito1 = (pontuacao < 10) ? 7'b1111111 : saida_decoder1;
+  digito2 = (pontuacao < 100) ? 7'b1111111 : saida_decoder2;
 	
 end
 
@@ -280,6 +362,9 @@ always @(posedge VGA_CLK) begin
   if (reset == 1) begin
     x_frog = ((640)/ 2) + 143;
     y_frog = (480 - 32) + 34;
+    if (win == 1) begin
+      pontuacao = pontuacao + 1;
+    end
   end
 
   case (estado)
@@ -329,7 +414,7 @@ always @(posedge VGA_CLK) begin
 end
 
 integer counter01 = 0;
-always @(posedge refreshrate) begin
+always @(posedge refreshrate01) begin
 	counter01 = counter01 + 1;
 
 	if(idx01 < 7) begin
@@ -350,7 +435,7 @@ always @(posedge refreshrate) begin
 end
 
 integer counter02 = 0;
-always @(posedge refreshrate) begin
+always @(posedge refreshrate02) begin
 	counter02 = counter02 + 1;
 
 	if(idx02 < 7) begin
@@ -371,7 +456,7 @@ always @(posedge refreshrate) begin
 end
 
 integer counter03 = 0;
-always @(posedge refreshrate) begin
+always @(posedge refreshrate03) begin
 	counter03 = counter03 + 1;
 
 	if(idx03 < 7) begin
@@ -392,7 +477,7 @@ always @(posedge refreshrate) begin
 end
 
 integer counter04 = 0;
-always @(posedge refreshrate) begin
+always @(posedge refreshrate04) begin
 	counter04 = counter04 + 1;
 
 	if(idx04 < 7) begin
@@ -413,7 +498,7 @@ always @(posedge refreshrate) begin
 end
 
 integer counter05 = 0;
-always @(posedge refreshrate) begin
+always @(posedge refreshrate05) begin
 	counter05 = counter05 + 1;
 
 	if(idx05 < 7) begin
@@ -434,7 +519,7 @@ always @(posedge refreshrate) begin
 end
 
 integer counter06 = 0;
-always @(posedge refreshrate) begin
+always @(posedge refreshrate06) begin
 	counter06 = counter06 + 1;
 
 	if(idx06 < 7) begin
@@ -455,7 +540,7 @@ always @(posedge refreshrate) begin
 end
 
 integer counter07 = 0;
-always @(posedge refreshrate) begin
+always @(posedge refreshrate07) begin
 	counter07 = counter07 + 1;
 
 	if(idx07 < 7) begin
@@ -476,7 +561,7 @@ always @(posedge refreshrate) begin
 end
 
 integer counter08 = 0;
-always @(posedge refreshrate) begin
+always @(posedge refreshrate08) begin
 	counter08 = counter08 + 1;
 
 	if(idx08 < 7) begin
