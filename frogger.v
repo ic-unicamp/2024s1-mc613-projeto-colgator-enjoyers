@@ -90,9 +90,9 @@ wire [23:0] saida_debugger;
 wire [6:0] saida_decoder0;
 wire [6:0] saida_decoder1;
 wire [6:0] saida_decoder2;
-reg [21:0] refreshrate_divider01 = 1500000;
+reg [21:0] refreshrate_divider01 = 3000000;
 reg [21:0] refreshrate_divider02 = 2500000;
-reg [21:0] refreshrate_divider03 = 3000000;
+reg [21:0] refreshrate_divider03 = 4000000;
 reg [21:0] refreshrate_divider04 = 3500000;
 reg [21:0] refreshrate_divider05 = 5000000;
 reg [21:0] refreshrate_divider06 = 3000000;
@@ -270,7 +270,7 @@ always @(posedge VGA_CLK) begin
 				VGA_R = 27;
 				VGA_G = 100;
 				VGA_B = 196;
-			end
+			end	
 		end
 		for (i = 0; i < 8; i = i + 1) begin
 			if(x > 96 && y > 2 && (y > (256 + 34) - 32 && y < (256 + 34)) && (x > (adress06[i] - (32 * line06[i])) && x < adress06[i])) begin
@@ -298,49 +298,49 @@ always @(posedge VGA_CLK) begin
 	
 	
 	for (i = 0; i < 8; i = i + 1) begin
-		if((y_frog + 16 > (448 + 34) - 32 && y_frog < (448 + 34)) && ((x_frog + 32 > adress01[i] && x_frog + 32 < (adress01[i] + (32 * line01[i]))) || (x_frog > adress01[i] && x_frog < (adress01[i] + (32 * line01[i]))))) begin
+		if(((y_frog + 16 > (448 + 34) - 32 && y_frog < (448 + 34)) || (y_frog + 32 > (448 + 34) - 32 && y_frog + 16 < (448 + 34))) && ((x_frog + 32 > adress01[i] && x_frog + 32 < (adress01[i] + (32 * line01[i]))) || (x_frog > adress01[i] && x_frog < (adress01[i] + (32 * line01[i]))))) begin
 			reset = 1;
 		end
 	end
 	
 	for (i = 0; i < 8; i = i + 1) begin
-		if((y_frog + 16 > (416 + 34) - 32 && y_frog < (416 + 34)) && ((x_frog + 32 > adress02[i] && x_frog + 32 < (adress02[i] + (32 * line02[i]))) || (x_frog > adress02[i] && x_frog < (adress02[i] + (32 * line02[i]))))) begin
+		if(((y_frog + 16 > (416 + 34) - 32 && y_frog < (416 + 34)) || (y_frog + 32 > (416 + 34) - 32 && y_frog + 16 < (416 + 34))) && ((x_frog + 32 > adress02[i] && x_frog + 32 < (adress02[i] + (32 * line02[i]))) || (x_frog > adress02[i] && x_frog < (adress02[i] + (32 * line02[i]))))) begin
 			reset = 1;
 		end
 	end
 	
 	for (i = 0; i < 8; i = i + 1) begin
-		if((y_frog + 16 > (384 + 34) - 32 && y_frog < (384 + 34)) && ((x_frog + 32 < adress03[i] && x_frog + 32 > (adress03[i] - (32 * line03[i]))) || (x_frog < adress03[i] && x_frog > (adress03[i] - (32 * line03[i]))))) begin
+		if(((y_frog + 16 > (384 + 34) - 32 && y_frog < (384 + 34)) || (y_frog + 32 > (384 + 34) - 32 && y_frog + 16 < (384 + 34))) && ((x_frog + 32 < adress03[i] && x_frog + 32 > (adress03[i] - (32 * line03[i]))) || (x_frog < adress03[i] && x_frog > (adress03[i] - (32 * line03[i]))))) begin
 			reset = 1;
 		end
 	end
 	
 	for (i = 0; i < 8; i = i + 1) begin
-		if((y_frog + 16 > (352 + 34) - 32 && y_frog < (352 + 34)) && ((x_frog + 32 < adress04[i] && x_frog + 32 > (adress04[i] - (32 * line04[i]))) || (x_frog < adress04[i] && x_frog > (adress04[i] - (32 * line04[i]))))) begin
+		if(((y_frog + 16 > (352 + 34) - 32 && y_frog < (352 + 34)) || (y_frog + 32 > (352 + 34) - 32 && y_frog + 16 < (352 + 34))) && ((x_frog + 32 < adress04[i] && x_frog + 32 > (adress04[i] - (32 * line04[i]))) || (x_frog < adress04[i] && x_frog > (adress04[i] - (32 * line04[i]))))) begin
 			reset = 1;
 		end
 	end
 	
 	for (i = 0; i < 8; i = i + 1) begin
-		if((y_frog + 16 > (288 + 34) - 32 && y_frog < (288 + 34)) && ((x_frog + 32 > adress05[i] && x_frog + 32 < (adress05[i] + (32 * line05[i]))) || (x_frog > adress05[i] && x_frog < (adress05[i] + (32 * line05[i]))))) begin
+		if(((y_frog + 16 > (288 + 34) - 32 && y_frog < (288 + 34)) || (y_frog + 32 > (288 + 34) - 32 && y_frog + 16 < (288 + 34))) && ((x_frog + 32 > adress05[i] && x_frog + 32 < (adress05[i] + (32 * line05[i]))) || (x_frog > adress05[i] && x_frog < (adress05[i] + (32 * line05[i]))))) begin
 			reset = 1;
 		end
 	end
 	
 	for (i = 0; i < 8; i = i + 1) begin
-		if((y_frog + 16 > (256 + 34) - 32 && y_frog < (256 + 34)) && ((x_frog + 32 < adress06[i] && x_frog + 32 > (adress06[i] - (32 * line06[i]))) || (x_frog < adress06[i] && x_frog > (adress06[i] - (32 * line06[i]))))) begin
+		if(((y_frog + 16 > (256 + 34) - 32 && y_frog < (256 + 34)) || (y_frog + 32 > (256 + 34) - 32 && y_frog + 16 < (256 + 34))) && ((x_frog + 32 < adress06[i] && x_frog + 32 > (adress06[i] - (32 * line06[i]))) || (x_frog < adress06[i] && x_frog > (adress06[i] - (32 * line06[i]))))) begin
 			reset = 1;
 		end
 	end
 	
 	for (i = 0; i < 8; i = i + 1) begin
-		if((y_frog + 16 > (224 + 34) - 32 && y_frog < (224 + 34)) && ((x_frog + 32 > adress07[i] && x_frog + 32 < (adress07[i] + (32 * line07[i]))) || (x_frog > adress07[i] && x_frog < (adress07[i] + (32 * line07[i]))))) begin
+		if(((y_frog + 16 > (224 + 34) - 32 && y_frog < (224 + 34)) || (y_frog + 32 > (224 + 34) - 32 && y_frog + 16 < (224 + 34))) && ((x_frog + 32 > adress07[i] && x_frog + 32 < (adress07[i] + (32 * line07[i]))) || (x_frog > adress07[i] && x_frog < (adress07[i] + (32 * line07[i]))))) begin
 			reset = 1;
 		end
 	end
 	
 	for (i = 0; i < 8; i = i + 1) begin
-		if((y_frog + 16 > (192 + 34) - 32 && y_frog < (192 + 34)) && ((x_frog + 32 < adress08[i] && x_frog + 32 > (adress08[i] - (32 * line08[i]))) || (x_frog < adress08[i] && x_frog > (adress08[i] - (32 * line08[i]))))) begin
+		if(((y_frog + 16 > (192 + 34) - 32 && y_frog < (192 + 34)) || (y_frog + 32 > (192 + 34) - 32 && y_frog + 16 < (192 + 34))) && ((x_frog + 32 < adress08[i] && x_frog + 32 > (adress08[i] - (32 * line08[i]))) || (x_frog < adress08[i] && x_frog > (adress08[i] - (32 * line08[i]))))) begin
 			reset = 1;
 		end
 	end
@@ -364,7 +364,9 @@ always @(posedge VGA_CLK) begin
     y_frog = (480 - 32) + 34;
     if (win == 1) begin
       pontuacao = pontuacao + 1;
-    end
+	end else if (pontuacao > 0) begin
+	  pontuacao = pontuacao - 1;
+	end
   end
 
   case (estado)
@@ -380,28 +382,28 @@ always @(posedge VGA_CLK) begin
       end
     end
     1: begin
-      x_frog = x_frog + 32;
+      x_frog = x_frog + 16;
       if (x_frog > 640 + 141) begin
         x_frog = 141;
       end
       estado = 5;
     end
     2: begin
-      x_frog = x_frog - 32;
+      x_frog = x_frog - 16;
       if (x_frog < 141) begin
         x_frog = 640 + 141 - 15;
       end
       estado = 5;
     end
     3: begin
-		if (y_frog + 32 < 505) begin
-			y_frog = y_frog + 32;
+		if (y_frog + 16 < 505) begin
+			y_frog = y_frog + 16;
 		end
       estado = 5;
     end
     4: begin
-	 		if (y_frog - 32 > 25) begin
-				y_frog = y_frog - 32;
+	 		if (y_frog - 16 > 25) begin
+				y_frog = y_frog - 16;
 			end
       estado = 5;
     end
