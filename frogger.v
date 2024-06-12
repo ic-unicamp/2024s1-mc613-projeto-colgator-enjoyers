@@ -19,50 +19,268 @@ clock_divider divider_25(
   .CLK_25(VGA_CLK)
 );
 
-refreshrate refresh(
-  .clk_50MHz(CLOCK_50),
-  .clk_25Hz(refreshrate)
-);
-
 wire refreshrate;
+integer pontuacao = 0;
 reg [21:0] refreshrate_divider = 2000000;
 integer x, y, estado = 0;
 integer frametime = 0.042;
-integer x_frog = ((640 - 128)/ 2) + 143;
-integer y_frog = (480 - 2) + 25;
+integer x_frog = ((640)/ 2) + 143;
+integer y_frog = (480 - 32) + 34;
 assign VGA_HS = (x < 96)? 0 : 1;
 assign VGA_VS = (y < 2)? 0 : 1;
 assign VGA_BLANK_N = 1;
 assign VGA_SYNC_N = 0;
+reg [10:0] adress01 [0:7];
+reg [10:0] adress02 [0:7];
+reg [10:0] adress03 [0:7];
+reg [10:0] adress04 [0:7];
+reg [10:0] adress05 [0:7];
+reg [10:0] adress06 [0:7];
+reg [10:0] adress07 [0:7];
+reg [10:0] adress08 [0:7];
+reg [7:0] line01 [0:7];
+reg [7:0] line02 [0:7];
+reg [7:0] line03 [0:7];
+reg [7:0] line04 [0:7];
+reg [7:0] line05 [0:7];
+reg [7:0] line06 [0:7];
+reg [7:0] line07 [0:7];
+reg [7:0] line08 [0:7];
+integer i, j;
+integer reset = 0;
+initial begin
+	 line01[0] = 8'd1;
+	 line01[1] = 8'd3;
+	 line01[2] = 8'd2;
+	 line01[3] = 8'd0;
+	 line01[4] = 8'd0;
+	 line01[5] = 8'd3;
+	 line01[6] = 8'd2;
+	 line01[7] = 8'd3;
+	 
+	 line02[0] = 8'd1;
+	 line02[1] = 8'd3;
+	 line02[2] = 8'd2;
+	 line02[3] = 8'd0;
+	 line02[4] = 8'd0;
+	 line02[5] = 8'd3;
+	 line02[6] = 8'd2;
+	 line02[7] = 8'd3;
+	 
+	 line03[0] = 8'd1;
+	 line03[1] = 8'd3;
+	 line03[2] = 8'd2;
+	 line03[3] = 8'd0;
+	 line03[4] = 8'd0;
+	 line03[5] = 8'd3;
+	 line03[6] = 8'd2;
+	 line03[7] = 8'd3;
+	 
+	 line04[0] = 8'd1;
+	 line04[1] = 8'd3;
+	 line04[2] = 8'd2;
+	 line04[3] = 8'd0;
+	 line04[4] = 8'd0;
+	 line04[5] = 8'd3;
+	 line04[6] = 8'd2;
+	 line04[7] = 8'd3;
+	 
+	 line05[0] = 8'd1;
+	 line05[1] = 8'd3;
+	 line05[2] = 8'd2;
+	 line05[3] = 8'd0;
+	 line05[4] = 8'd0;
+	 line05[5] = 8'd3;
+	 line05[6] = 8'd2;
+	 line05[7] = 8'd3;
+	 
+	 line06[0] = 8'd1;
+	 line06[1] = 8'd3;
+	 line06[2] = 8'd2;
+	 line06[3] = 8'd0;
+	 line06[4] = 8'd0;
+	 line06[5] = 8'd3;
+	 line06[6] = 8'd2;
+	 line06[7] = 8'd3;
+	 
+	 line07[0] = 8'd1;
+	 line07[1] = 8'd3;
+	 line07[2] = 8'd2;
+	 line07[3] = 8'd0;
+	 line07[4] = 8'd0;
+	 line07[5] = 8'd3;
+	 line07[6] = 8'd2;
+	 line07[7] = 8'd3;
+	 
+	 line08[0] = 8'd1;
+	 line08[1] = 8'd3;
+	 line08[2] = 8'd2;
+	 line08[3] = 8'd0;
+	 line08[4] = 8'd0;
+	 line08[5] = 8'd3;
+	 line08[6] = 8'd2;
+	 line08[7] = 8'd3;
+	
+end
+
+integer idx01 = 0;
+integer idx02 = 0;
+integer idx03 = 0;
+integer idx04 = 0;
+integer idx05 = 0;
+integer idx06 = 0;
+integer idx07 = 0;
+integer idx08 = 0;
+
+
+ball_refreshrate ball_refresh(
+	.clk_50MHz(CLOCK_50),
+	.N(refreshrate_divider),
+	.clk_out(refreshrate)
+);
 
 always @(posedge VGA_CLK) begin
 
-  x = x + 1;
-  if (x == 800) begin
-    x = 0;
-    y = y + 1;
-    if (y == 525) begin
-      y = 0;
-    end
-  end
+	x = x + 1;
+	reset = 0;
+	if (x == 800) begin
+		x = 0;
+		y = y + 1;
+		if (y == 525) begin
+			y = 0;
+		end
+	end
   
-  if (x > 96 && y > 2 && x > x_frog && x < (x_frog + 32) && y > y_frog && y < (y_frog + 32)) begin
-    VGA_R = 0;
-    VGA_G = 255;
-    VGA_B = 0;
-  end if (x > 96 && y > 2 && ((y > 480 - 32 && y < 480) || (y > 402 - 32 && y < 402))) begin
-    VGA_R = 255;
-    VGA_G = 255;
-    VGA_B = 255;
-  end else begin 
-    VGA_R = 0;
-    VGA_G = 0;
-    VGA_B = 0;
-  end
+	if (x > 96 && y > 2 && x > x_frog && x < (x_frog + 32) && y > y_frog && y < (y_frog + 32)) begin
+		VGA_R = 0;
+		VGA_G = 255;
+		VGA_B = 0;
+	end else if (x > 96 && y > 2 && ((y > (480 + 34) - 32 && y < (480 + 34)) || (y > (320 + 34) - 32 && y < (320 + 34)) || (y > (160 + 34) - 32 && y < (160 + 34)))) begin
+		VGA_R = 255;
+		VGA_G = 255;
+		VGA_B = 255;
+	end else begin
+		VGA_R = 0;
+		VGA_G = 0;
+		VGA_B = 0;
+		for (i = 0; i < 8; i = i + 1) begin
+			if(x > 96 && y > 2 && (y > (448 + 34) - 32 && y < (448 + 34)) && (x > adress01[i] && x < (adress01[i] + (32 * line01[i])))) begin
+				VGA_R = 255;
+				VGA_G = 0;
+				VGA_B = 0;
+			end
+		end
+		for (i = 0; i < 8; i = i + 1) begin
+			if(x > 96 && y > 2 && (y > (416 + 34) - 32 && y < (416 + 34)) && (x > adress02[i] && x < (adress02[i] + (32 * line02[i])))) begin
+				VGA_R = 0;
+				VGA_G = 0;
+				VGA_B = 255;
+			end
+		end
+		for (i = 0; i < 8; i = i + 1) begin
+			if(x > 96 && y > 2 && (y > (384 + 34) - 32 && y < (384 + 34)) && (x > (adress03[i] - (32 * line03[i])) && x < adress03[i])) begin
+				VGA_R = 243;
+				VGA_G = 122;
+				VGA_B = 32;
+			end
+		end
+		for (i = 0; i < 8; i = i + 1) begin
+			if(x > 96 && y > 2 && (y > (352 + 34) - 32 && y < (352 + 34)) && (x > (adress04[i] - (32 * line04[i])) && x < adress04[i])) begin
+				VGA_R = 54;
+				VGA_G = 45;
+				VGA_B = 23;
+			end
+		end
+		for (i = 0; i < 8; i = i + 1) begin
+			if(x > 96 && y > 2 && (y > (288 + 34) - 32 && y < (288 + 34)) && (x > adress05[i] && x < (adress05[i] + (32 * line05[i])))) begin
+				VGA_R = 0;
+				VGA_G = 5;
+				VGA_B = 24;
+			end
+		end
+		for (i = 0; i < 8; i = i + 1) begin
+			if(x > 96 && y > 2 && (y > (256 + 34) - 32 && y < (256 + 34)) && (x > (adress06[i] - (32 * line06[i])) && x < adress06[i])) begin
+				VGA_R = 12;
+				VGA_G = 234;
+				VGA_B = 112;
+			end
+		end
+		for (i = 0; i < 8; i = i + 1) begin
+			if(x > 96 && y > 2 && (y > (224 + 34) - 32 && y < (224 + 34)) && (x > adress07[i] && x < (adress07[i] + (32 * line07[i])))) begin
+				VGA_R = 125;
+				VGA_G = 125;
+				VGA_B = 34;
+			end
+		end
+		for (i = 0; i < 8; i = i + 1) begin
+			if(x > 96 && y > 2 && (y > (192 + 34) - 32 && y < (192 + 34)) && (x > (adress08[i] - (32 * line08[i])) && x < adress08[i])) begin
+				VGA_R = 255;
+				VGA_G = 0;
+				VGA_B = 0;
+			end
+		end
+	end
+	
+	
+	
+	for (i = 0; i < 8; i = i + 1) begin
+		if((y_frog + 16 > (448 + 34) - 32 && y_frog < (448 + 34)) && ((x_frog + 32 > adress01[i] && x_frog + 32 < (adress01[i] + (32 * line01[i]))) || (x_frog > adress01[i] && x_frog < (adress01[i] + (32 * line01[i]))))) begin
+			reset = 1;
+		end
+	end
+	
+	for (i = 0; i < 8; i = i + 1) begin
+		if((y_frog + 16 > (416 + 34) - 32 && y_frog < (416 + 34)) && ((x_frog + 32 > adress02[i] && x_frog + 32 < (adress02[i] + (32 * line02[i]))) || (x_frog > adress02[i] && x_frog < (adress02[i] + (32 * line02[i]))))) begin
+			reset = 1;
+		end
+	end
+	
+	for (i = 0; i < 8; i = i + 1) begin
+		if((y_frog + 16 > (384 + 34) - 32 && y_frog < (384 + 34)) && ((x_frog + 32 < adress03[i] && x_frog + 32 > (adress03[i] - (32 * line03[i]))) || (x_frog < adress03[i] && x_frog > (adress03[i] - (32 * line03[i]))))) begin
+			reset = 1;
+		end
+	end
+	
+	for (i = 0; i < 8; i = i + 1) begin
+		if((y_frog + 16 > (352 + 34) - 32 && y_frog < (352 + 34)) && ((x_frog + 32 < adress04[i] && x_frog + 32 > (adress04[i] - (32 * line04[i]))) || (x_frog < adress04[i] && x_frog > (adress04[i] - (32 * line04[i]))))) begin
+			reset = 1;
+		end
+	end
+	
+	for (i = 0; i < 8; i = i + 1) begin
+		if((y_frog + 16 > (288 + 34) - 32 && y_frog < (288 + 34)) && ((x_frog + 32 > adress05[i] && x_frog + 32 < (adress05[i] + (32 * line05[i]))) || (x_frog > adress05[i] && x_frog < (adress05[i] + (32 * line05[i]))))) begin
+			reset = 1;
+		end
+	end
+	
+	for (i = 0; i < 8; i = i + 1) begin
+		if((y_frog + 16 > (256 + 34) - 32 && y_frog < (256 + 34)) && ((x_frog + 32 < adress06[i] && x_frog + 32 > (adress06[i] - (32 * line06[i]))) || (x_frog < adress06[i] && x_frog > (adress06[i] - (32 * line06[i]))))) begin
+			reset = 1;
+		end
+	end
+	
+	for (i = 0; i < 8; i = i + 1) begin
+		if((y_frog + 16 > (224 + 34) - 32 && y_frog < (224 + 34)) && ((x_frog + 32 > adress07[i] && x_frog + 32 < (adress07[i] + (32 * line07[i]))) || (x_frog > adress07[i] && x_frog < (adress07[i] + (32 * line07[i]))))) begin
+			reset = 1;
+		end
+	end
+	
+	for (i = 0; i < 8; i = i + 1) begin
+		if((y_frog + 16 > (192 + 34) - 32 && y_frog < (192 + 34)) && ((x_frog + 32 < adress08[i] && x_frog + 32 > (adress08[i] - (32 * line08[i]))) || (x_frog < adress08[i] && x_frog > (adress08[i] - (32 * line08[i]))))) begin
+			reset = 1;
+		end
+	end
+	
+	
 end
 
 
 always @(posedge VGA_CLK) begin
+
+  if (reset == 1) begin
+    x_frog = ((640)/ 2) + 143;
+    y_frog = (480 - 32) + 34;
+  end
 
   case (estado)
     0: begin
@@ -91,11 +309,15 @@ always @(posedge VGA_CLK) begin
       estado = 5;
     end
     3: begin
-      y_frog = y_frog + 32;
+		if (y_frog + 32 < 505) begin
+			y_frog = y_frog + 32;
+		end
       estado = 5;
     end
     4: begin
-      y_frog = y_frog - 32;
+	 		if (y_frog - 32 > 25) begin
+				y_frog = y_frog - 32;
+			end
       estado = 5;
     end
     5: begin
@@ -104,6 +326,174 @@ always @(posedge VGA_CLK) begin
       end
     end
   endcase
+end
+
+integer counter01 = 0;
+always @(posedge refreshrate) begin
+	counter01 = counter01 + 1;
+
+	if(idx01 < 7) begin
+		if (counter01 == (40  + (16 * line01[idx01]))) begin
+			adress01[idx01] = 11'd783;
+			idx01 = idx01 + 1;
+			counter01 = 0;
+		end
+	end
+
+	for (j = 0; j < 8; j = j + 1) begin
+		adress01[j] = adress01[j] - 1;
+		if (adress01[j] < 45) begin 
+			adress01[j] = 11'd783;
+		end
+	end
+	
+end
+
+integer counter02 = 0;
+always @(posedge refreshrate) begin
+	counter02 = counter02 + 1;
+
+	if(idx02 < 7) begin
+		if (counter02 == (40  + (16 * line02[idx02]))) begin
+			adress02[idx02] = 11'd783;
+			idx02 = idx02 + 1;
+			counter02 = 0;
+		end
+	end
+
+	for (j = 0; j < 8; j = j + 1) begin
+		adress02[j] = adress02[j] - 1;
+		if (adress02[j] < 45) begin 
+			adress02[j] = 11'd783;
+		end
+	end
+	
+end
+
+integer counter03 = 0;
+always @(posedge refreshrate) begin
+	counter03 = counter03 + 1;
+
+	if(idx03 < 7) begin
+		if (counter03 == (40  + (16 * line03[idx03]))) begin
+			adress03[idx03] = 11'd80;
+			idx03 = idx03 + 1;
+			counter03 = 0;
+		end
+	end
+
+	for (j = 0; j < 8; j = j + 1) begin
+		adress03[j] = adress03[j] + 1;
+		if (adress03[j] > 879) begin 
+			adress03[j] = 11'd80;
+		end
+	end
+	
+end
+
+integer counter04 = 0;
+always @(posedge refreshrate) begin
+	counter04 = counter04 + 1;
+
+	if(idx04 < 7) begin
+		if (counter04 == (40  + (16 * line04[idx04]))) begin
+			adress04[idx04] = 11'd80;
+			idx04 = idx04 + 1;
+			counter04 = 0;
+		end
+	end
+
+	for (j = 0; j < 8; j = j + 1) begin
+		adress04[j] = adress04[j] + 1;
+		if (adress04[j] > 879) begin 
+			adress04[j] = 11'd80;
+		end
+	end
+	
+end
+
+integer counter05 = 0;
+always @(posedge refreshrate) begin
+	counter05 = counter05 + 1;
+
+	if(idx05 < 7) begin
+		if (counter05 == (40  + (16 * line05[idx05]))) begin
+			adress05[idx05] = 11'd783;
+			idx05 = idx05 + 1;
+			counter05 = 0;
+		end
+	end
+
+	for (j = 0; j < 8; j = j + 1) begin
+		adress05[j] = adress05[j] - 1;
+		if (adress05[j] < 45) begin 
+			adress05[j] = 11'd783;
+		end
+	end
+	
+end
+
+integer counter06 = 0;
+always @(posedge refreshrate) begin
+	counter06 = counter06 + 1;
+
+	if(idx06 < 7) begin
+		if (counter06 == (40  + (16 * line06[idx06]))) begin
+			adress06[idx06] = 11'd80;
+			idx06 = idx06 + 1;
+			counter06 = 0;
+		end
+	end
+
+	for (j = 0; j < 8; j = j + 1) begin
+		adress06[j] = adress06[j] + 1;
+		if (adress06[j] > 879) begin 
+			adress06[j] = 11'd80;
+		end
+	end
+	
+end
+
+integer counter07 = 0;
+always @(posedge refreshrate) begin
+	counter07 = counter07 + 1;
+
+	if(idx07 < 7) begin
+		if (counter07 == (40  + (16 * line07[idx07]))) begin
+			adress07[idx07] = 11'd783;
+			idx07 = idx07 + 1;
+			counter07 = 0;
+		end
+	end
+
+	for (j = 0; j < 8; j = j + 1) begin
+		adress07[j] = adress07[j] - 1;
+		if (adress07[j] < 45) begin 
+			adress07[j] = 11'd783;
+		end
+	end
+	
+end
+
+integer counter08 = 0;
+always @(posedge refreshrate) begin
+	counter08 = counter08 + 1;
+
+	if(idx08 < 7) begin
+		if (counter08 == (40  + (16 * line08[idx08]))) begin
+			adress08[idx08] = 11'd80;
+			idx08 = idx08 + 1;
+			counter08 = 0;
+		end
+	end
+
+	for (j = 0; j < 8; j = j + 1) begin
+		adress08[j] = adress08[j] + 1;
+		if (adress08[j] > 879) begin 
+			adress08[j] = 11'd80;
+		end
+	end
+	
 end
 
 
